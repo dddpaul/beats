@@ -26,7 +26,6 @@ https://github.com/elastic/beats/compare/v7.0.0-alpha2...master[Check the HEAD d
 - Remove the deprecated `xpack.monitoring.*` settings. Going forward only `monitoring.*` settings may be used. {issue}9424[9424] {pull}18608[18608]
 - Added `certificate` TLS verification mode to ignore server name mismatch. {issue}12283[12283] {pull}20293[20293]
 - Autodiscover doesn't generate any configuration when a variable is missing. Previously it generated an incomplete configuration. {pull}20898[20898]
-- `AddProcessMetadata` processor enrich process information with owner name. {issue}21068[21068] {pull}21111[21111]
 - Remove redundant `cloudfoundry.*.timestamp` fields. This value is set in `@timestamp`. {pull}21175[21175]
 - Allow embedding of CAs, Certificate of private keys for anything that support TLS in ouputs and inputs. {pull}21179[21179]
 - Update to Golang 1.12.1. {pull}11330[11330]
@@ -525,6 +524,7 @@ https://github.com/elastic/beats/compare/v7.0.0-alpha2...master[Check the HEAD d
 - Add proxy metricset for istio module. {pull}21751[21751]
 - Added Kafka version 2.2 to the list of supported versions. {pull}22328[22328]
 - Add support for ephemeral containers in kubernetes autodiscover and `add_kubernetes_metadata`. {pull}22389[22389] {pull}22439[22439]
+- `AddProcessMetadata` processor enrich process information with owner name. {issue}21068[21068] {pull}21111[21111]
 
 *Auditbeat*
 
