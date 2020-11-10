@@ -513,8 +513,13 @@ func runAgent(env map[string]string) error {
 		}
 
 		// build docker image
-		if err := sh.Run("docker", "build", "-t", tag, "."); err != nil {
-			return err
+		if err := dockerBuild(tag); err != nil {
+			fmt.Println(">> Building docker images again (after 10 seconds)")
+			// This sleep is to avoid hitting the docker build issues when resources are not available.
+			time.Sleep(10)
+			if err := dockerBuild(tag); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -572,7 +577,7 @@ func packageAgent(requiredPackages []string, packagingFn func()) {
 		defer os.RemoveAll(dropPath)
 		defer os.Unsetenv(agentDropPath)
 
-		packedBeats := []string{"filebeat", "heartbeat", "metricbeat"}
+		packedBeats := []string{"filebeat", "metricbeat"}
 
 		for _, b := range packedBeats {
 			pwd, err := filepath.Abs(filepath.Join("..", b))
@@ -625,6 +630,10 @@ func copyAll(from, to string) error {
 	})
 }
 
+func dockerBuild(tag string) error {
+	return sh.Run("docker", "build", "-t", tag, ".")
+}
+
 func dockerTag() string {
 	const commitLen = 7
 	tagBase := "elastic-agent"
@@ -658,6 +667,7 @@ func buildVars() map[string]string {
 	if isDevFlag, devFound := os.LookupEnv(devEnv); devFound {
 		if isDev, err := strconv.ParseBool(isDevFlag); err == nil && isDev {
 			vars["github.com/elastic/beats/v7/x-pack/elastic-agent/pkg/release.allowEmptyPgp"] = "true"
+			vars["github.com/elastic/beats/v7/x-pack/elastic-agent/pkg/release.allowUpgrade"] = "true"
 		}
 	}
 
